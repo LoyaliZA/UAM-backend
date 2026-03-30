@@ -9,10 +9,9 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // Traemos los últimos 50 registros, ordenados del más reciente al más antiguo
-        $logs = ActivityLog::latest()->take(50)->get();
+        // Cambiamos take(50)->get() por paginate(15) para mostrar 15 registros por página
+        $logs = ActivityLog::latest()->paginate(15);
         
-        // Enviamos la variable $logs a una vista llamada 'dashboard'
         return view('dashboard', compact('logs'));
     }
 }
