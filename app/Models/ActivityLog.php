@@ -112,4 +112,15 @@ class ActivityLog extends Model
                 return 'N/A';
         }
     }
+
+    /*
+     * Scope para filtrar por el tipo de evento (acción).
+     */
+    public function scopeByEventType(Builder $query, ?string $eventType): Builder
+    {
+        if ($eventType) {
+            return $query->where('event_type', $eventType);
+        }
+        return $query;
+    }
 }

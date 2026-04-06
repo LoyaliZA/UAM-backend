@@ -42,13 +42,17 @@ class DashboardController extends Controller
      * Centraliza la logica de busqueda para evitar codigo duplicado.
      * Retorna el constructor de consultas (Builder).
      */
+    /*
+     * Centraliza la logica de busqueda incluyendo el nuevo filtro de accion.
+     */
     private function getFilteredQuery(Request $request)
     {
         return ActivityLog::query()
             ->byEmployee($request->input('employee'))
-            ->byPeriod($request->input('period')) // Nuevo filtro agregado
+            ->byPeriod($request->input('period'))
             ->byDateRange($request->input('start_date'), $request->input('end_date'))
             ->byApplication($request->input('app_name'))
+            ->byEventType($request->input('event_type')) // <--- Nuevo filtro vinculado
             ->latest();
     }
 }

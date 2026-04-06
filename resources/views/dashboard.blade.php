@@ -38,14 +38,23 @@
                 Panel de Auditoría Forense en Tiempo Real
             </p>
         </div>
-        <div class="flex items-center space-x-2 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
-            <span class="relative flex h-2.5 w-2.5">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
-            </span>
-            <span class="text-green-400 text-[10px] font-bold uppercase tracking-wider" id="sync-status">
-                Live Sync
-            </span>
+        <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-2 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
+                <span class="relative flex h-2.5 w-2.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                </span>
+                <span class="text-green-400 text-[10px] font-bold uppercase tracking-wider" id="sync-status">
+                    Live Sync
+                </span>
+            </div>
+
+            <form action="{{ route('logout', [], false) }}" method="POST">
+                @csrf
+                <button type="submit" class="text-xs text-slate-400 hover:text-white transition font-bold border border-slate-700 px-3 py-1.5 rounded bg-slate-800 hover:bg-red-600">
+                    Cerrar Sesión
+                </button>
+            </form>
         </div>
     </div>
 
@@ -53,7 +62,7 @@
 
         <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex-shrink-0">
             <form method="GET" action="{{ route('dashboard.index') }}" class="flex flex-wrap gap-4 items-end" id="filter-form">
-                
+
                 <div class="w-40">
                     <label class="block text-[10px] text-slate-400 uppercase tracking-wide mb-1 font-bold">Usuario ID</label>
                     <input type="text" name="employee" value="{{ request('employee') }}" placeholder="Ej. DEV-001" class="w-full bg-slate-900 border border-slate-700 text-white rounded px-3 py-2 text-xs focus:ring-1 focus:ring-blue-500 outline-none">
@@ -72,6 +81,20 @@
                         <option value="week" {{ request('period') == 'week' ? 'selected' : '' }}>Esta semana</option>
                         <option value="month" {{ request('period') == 'month' ? 'selected' : '' }}>Este mes</option>
                         <option value="custom" {{ request('period') == 'custom' ? 'selected' : '' }}>Personalizado...</option>
+                    </select>
+                </div>
+
+                <div class="w-40">
+                    <label class="block text-[10px] text-slate-400 uppercase tracking-wide mb-1 font-bold">Tipo de Acción</label>
+                    <select name="event_type" class="w-full bg-slate-900 border border-slate-700 text-white rounded px-3 py-2 text-xs focus:ring-1 focus:ring-blue-500 outline-none">
+                        <option value="">Todas las acciones</option>
+                        <option value="admin_login" {{ request('event_type') == 'admin_login' ? 'selected' : '' }}>🛡️ Acceso Admin</option>
+                        <option value="screenshot" {{ request('event_type') == 'screenshot' ? 'selected' : '' }}>📸 Capturas</option>
+                        <option value="navigation" {{ request('event_type') == 'navigation' ? 'selected' : '' }}>🌐 Navegación</option>
+                        <option value="keystroke" {{ request('event_type') == 'keystroke' ? 'selected' : '' }}>⌨️ Teclado</option>
+                        <option value="clipboard" {{ request('event_type') == 'clipboard' ? 'selected' : '' }}>📋 Portapapeles</option>
+                        <option value="window_focus" {{ request('event_type') == 'window_focus' ? 'selected' : '' }}>🖥️ App Activa</option>
+                        <option value="form_submit" {{ request('event_type') == 'form_submit' ? 'selected' : '' }}>📝 Formularios</option>
                     </select>
                 </div>
 
@@ -132,6 +155,8 @@
                             <td class="p-4">
                                 @if($log->event_type === 'navigation')
                                 <span class="text-blue-400 bg-blue-900/30 border border-blue-800 px-2 py-1 rounded text-[10px] font-bold flex items-center w-max">Navegación</span>
+                                @elseif($log->event_type === 'admin_login')
+                                <span class="text-emerald-400 bg-emerald-900/30 border border-emerald-800 px-2 py-1 rounded text-[10px] font-bold flex items-center w-max">🛡️ Acceso Admin</span>
                                 @elseif($log->event_type === 'keystroke')
                                 <span class="text-indigo-400 bg-indigo-900/30 border border-indigo-800 px-2 py-1 rounded text-[10px] font-bold flex items-center w-max">Teclado</span>
                                 @elseif($log->event_type === 'clipboard')
@@ -169,6 +194,11 @@
                                     @elseif($log->event_type === 'window_focus')
                                     <div class="bg-slate-900 p-2 rounded border border-slate-700 border-l-2 border-l-cyan-500">
                                         <span class="text-cyan-400 font-mono text-[11px]">El usuario cambió a esta aplicación.</span>
+                                    </div>
+                                    @elseif($log->event_type === 'admin_login')
+                                    <div class="bg-slate-900 p-2 rounded border border-slate-700 border-l-2 border-l-emerald-500 mt-2">
+                                        <div class="text-[11px]"><span class="text-emerald-500 font-bold">EMAIL:</span> <span class="text-slate-300">{{ $log->payload['email'] ?? 'N/A' }}</span></div>
+                                        <div class="text-[11px]"><span class="text-emerald-500 font-bold">NAVEGADOR:</span> <span class="text-slate-300">{{ $log->payload['user_agent'] ?? 'Desconocido' }}</span></div>
                                     </div>
                                     @elseif($log->event_type === 'screenshot')
                                     <div class="bg-slate-900 p-2 rounded border border-slate-700 border-l-2 border-l-rose-500 mt-2">
