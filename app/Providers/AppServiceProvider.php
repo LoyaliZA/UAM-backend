@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\URL; // 1. Agregamos esta línea aquí
+use Illuminate\Support\Facades\URL; // <-- 1. Importar la fachada URL
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,8 +20,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // 2. Le decimos a Laravel que si está en producción, SIEMPRE use https://
-        if (env('APP_ENV') === 'production') {
+        // 2. Forzar esquemas seguros en producción
+        if (config('app.env') === 'production') {
             URL::forceScheme('https');
         }
     }

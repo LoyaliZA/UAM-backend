@@ -34,7 +34,9 @@ class DashboardController extends Controller
      */
     public function exportPdf(Request $request, ReportService $reportService)
     {
-        $logs = $this->getFilteredQuery($request)->get();
+        // Límite de seguridad: DOMPDF colapsa con miles de registros.
+        // Restringimos a 1000 para el reporte PDF. El Excel exportará todo el histórico sin problema.
+        $logs = $this->getFilteredQuery($request)->limit(1000)->get();
         return $reportService->generatePdf($logs);
     }
 

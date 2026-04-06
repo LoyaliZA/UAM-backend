@@ -33,11 +33,16 @@ class ReportService
      */
     public function generatePdf(Collection $logs)
     {
+        // Ampliamos la capacidad del servidor a 4GB exclusivamente para esta tarea
+        ini_set('memory_limit', '4G');
+        set_time_limit(300); // 5 minutos de tiempo de espera
+
         $fileName = 'auditoria_uam_' . now()->format('Ymd_His') . '.pdf';
-        
-        // DomPDF funciona mejor con vistas HTML simples
-        $pdf = Pdf::loadView('reports.pdf', compact('logs'));
-        
+
+        // Configuramos tamaño A4 y orientación horizontal (landscape)
+        $pdf = Pdf::loadView('reports.pdf', compact('logs'))
+            ->setPaper('a4', 'landscape');
+
         return $pdf->download($fileName);
     }
 }

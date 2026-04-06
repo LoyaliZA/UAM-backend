@@ -4,10 +4,27 @@
     <meta charset="UTF-8">
     <title>Reporte Forense UAM</title>
     <style>
-        body { font-family: sans-serif; font-size: 11px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #333; padding: 6px; text-align: left; }
-        th { background-color: #f2f2f2; }
+        body { 
+            font-family: sans-serif; 
+            font-size: 10px; /* Reducimos 1px para ganar espacio */
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 20px; 
+            table-layout: fixed; /* Fuerza a respetar los anchos asignados */
+        }
+        th, td { 
+            border: 1px solid #333; 
+            padding: 6px; 
+            text-align: left; 
+            vertical-align: top; /* Mantiene el texto alineado arriba */
+            word-wrap: break-word; /* Rompe el texto largo */
+            word-break: break-all; /* Fuerza la ruptura incluso si no hay espacios */
+        }
+        th { 
+            background-color: #f2f2f2; 
+        }
     </style>
 </head>
 <body>
